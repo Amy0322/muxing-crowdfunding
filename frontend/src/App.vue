@@ -1,60 +1,69 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
+    <div class="navbar navbar-expand-sm navbar-light bg-light fixed-top navbar-top mx-auto border-bottom" id="nav">
+      <div class="container">
+        <div class="navbar-collapse collapse">
+          <router-link class="router" to="/">OurName</router-link>
+          <img class="bar" src="https://i.imgur.com/4ZCvyCh.png" />
+        </div>
+      </div>
+    </div>
+    <router-view />
   </div>
 </template>
 
-<script>
-export default {
-  name: 'app',
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
-    }
+<style>
+  #app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
   }
-}
-</script>
 
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  #nav {
+    height: 60px;
+  }
 
-h1, h2 {
-  font-weight: normal;
-}
+  #nav a {
+    padding: 5px 20px;
+    color: #fff;
+    font-weight: 550;
+    cursor: pointer;
+  }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
+  #nav a.router-link-exact-active {
+    padding: 5px 20px;
+    color: #42b983;
+    font-weight: 550;
+    cursor: pointer;
+  }
 
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
+  .navbar {
+    overflow: hidden;
+    height: 60px;
+    background: -webkit-linear-gradient(left, #281483, #be78d1);
+    background: -o-linear-gradient(right, #281483, #be78d1);
+    background: -moz-linear-gradient(right, #281483, #be78d1);
+    background: linear-gradient(to right, #281483, #be78d1);
+  }
 
-a {
-  color: #42b983;
-}
+  .bar {
+    /* top: -125px; */
+    position: absolute;
+    right: 0px;
+  }
 </style>
+
+<script>
+  export default {
+    // 使用watch監聽$router的變化，跳頁時移到最上方
+    watch: {
+      // eslint-disable-next-line no-unused-vars
+      $route: function (to, from) {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      }
+    }
+  };
+</script>
