@@ -23,5 +23,10 @@ from proj02 import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include('vuenote.urls')),
     path('', TemplateView.as_view(template_name='index.html')),
+    path('form/', TemplateView.as_view(template_name='index.html')),
+    path('result/', TemplateView.as_view(template_name='index.html')),
+    path('mainapp/', include('mainapp.urls')),
+
 ]

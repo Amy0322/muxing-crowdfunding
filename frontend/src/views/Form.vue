@@ -6,23 +6,23 @@
         id="app"
         @submit.prevent="checkForm"
         action="/sonwhere"
-        method="post"
+        method="get"
       >
         <div class="formTitle">
           <h3>填寫募資方案資料</h3>
         </div>
         <div class="row-cols-md-1 text-left">
           <p>募資專案名稱：</p>
-          <input class="name" v-model="name" placeholder="請輸入募資專案名稱" />
+          <input class="name" v-model="formData.name" placeholder="請輸入募資專案名稱" />
           <p>募資金額(元)：</p>
           <input
             class="amount"
-            v-model.number="amount"
+            v-model.number="formData.amount"
             type="number"
             placeholder="請輸入募資金額"
           />
           <p>類別：</p>
-          <select class="type" v-model="type">
+          <select class="type" v-model="formData.type">
             <option v-for="type in types" :key="type.id" :type="type">{{
               type
             }}</option>
@@ -30,7 +30,7 @@
           <p>內容簡介：</p>
           <textarea
             class="content"
-            v-model="content"
+            v-model="formData.content"
             placeholder="請輸入募資專案內容簡介"
           ></textarea>
           <div class="error" v-if="errors.length">
@@ -152,9 +152,17 @@
 </style>
 
 <script>
+  import api from '../api/index';
+
 export default {
   data() {
     return {
+      formData:{
+        name:'',
+        amount:'',
+        type:'',
+        content:'',
+      },
       name: null,
       amount: null,
       types: [
@@ -187,28 +195,44 @@ export default {
     };
   },
   methods: {
+    // submitNote () {
+    //   api.fetchNotes('post', null, this.formData).then(res => {
+    //     this.msg = 'Saved'
+    //   }).catch((e) => {
+    //     this.msg = e.response
+    //   })
+    // },
     goHome() {
       this.$router.push({ path: "/" });
     },
     checkForm: function(e) {
       //拿到資料跳到結果頁面
-      if (this.name && this.amount && this.type && this.content) {
+      if (this.formData.name && this.formData.amount && this.formData.type && this.formData.content) {
         let project_data = {
-          name: this.name,
-          amount: this.amount,
-          type: this.type,
-          content: this.content
+          name: this.formData.name,
+          amount: this.formData.amount,
+          type: this.formData.type,
+          content: this.formData.content
         };
         this.projects.push(project_data);
         // 跳轉至最後一頁
-        this.$router.push({ path: "/result" });
+        //this.$router.push({ path: "/result" });
+
+        api.fetchNotes('post', null, this.formData).then(res => {
+        //this.msg = 'Saved';
+          console.log('post');
+        }).catch((e) => {
+          this.msg = e.response
+        })
       }
       //資料有缺則跳出警告
       this.errors = [];
-      if (!this.name) this.errors.push("募資專案名稱");
-      if (!this.amount) this.errors.push("募資金額");
-      if (!this.type) this.errors.push("類別");
-      if (!this.content) this.errors.push("內容簡介");
+      if (!this.formData.name) this.errors.push("募資專案名稱");
+      if (!this.formData.amount) this.errors.push("募資金額");
+      if (!this.formData.type) this.errors.push("類別");
+      if (!this.formData.content) this.errors.push("內容簡介");
+
+
 
       e.preventDefault();
     }
