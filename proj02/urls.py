@@ -18,15 +18,15 @@ from django.urls import path
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
 from proj02 import settings
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('vuenote.urls')),
     path('', TemplateView.as_view(template_name='index.html')),
     path('form/', TemplateView.as_view(template_name='index.html')),
     path('result/', TemplateView.as_view(template_name='index.html')),
+    path('feedback/<int:id>/', TemplateView.as_view(template_name='index.html')),
     path('mainapp/', include('mainapp.urls')),
 
 ]

@@ -1,4 +1,5 @@
 import Vue from "vue";
+import "./plugins/axios";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
@@ -7,9 +8,14 @@ import upperFirst from "lodash/upperFirst";
 import camelCase from "lodash/camelCase";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
-import axios from 'axios';
-
+import format from "vue-text-format";
+import Highcharts from "highcharts";
+import HighchartsVue from "highcharts-vue";
 Vue.use(BootstrapVue);
+Vue.use(format);
+Vue.use(Highcharts);
+Vue.use(HighchartsVue);
+
 // 讓瀏覽器的全域環境可以使用到 $
 import jQuery from "jquery";
 window.$ = window.jQuery = jQuery;
@@ -31,24 +37,13 @@ requireComponent.keys().forEach(fileName => {
 
   Vue.component(componentName, componentConfig.default || componentConfig);
 });
-
+Vue.filter("point", function(num) {
+  const parts = num.toString().split(".");
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return "$" + parts.join(".");
+});
 new Vue({
   router,
   store,
-  beforeCreate () {
-    Vue.prototype.$http = axios
-    axios.defaults.xsrfHeaderName = 'X-CSRFToken'
-    axios.defaults.xsrfCookieName = 'csrftoken'
-  },
   render: h => h(App)
 }).$mount("#app");
-
-// new Vue({
-//   el: '#app',
-//   beforeCreate () {
-//     Vue.prototype.$http = axios
-//     axios.defaults.xsrfHeaderName = 'X-CSRFToken'
-//     axios.defaults.xsrfCookieName = 'csrftoken'
-//   },
-//   render: h => h(App)
-// })

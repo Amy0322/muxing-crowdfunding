@@ -25,8 +25,8 @@ SECRET_KEY = 'w4g+%zfk637772iy(k1(1hz_0q&d*s^5qn88lt4k=4tjgt82n='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+IMPORT_EXPORT_USE_TRANSACTIONS = True
 
 # Application definition
 
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'vuenote',
     'rest_framework',
     'mainapp',
+    'import_export',
 ]
 
 MIDDLEWARE = [

@@ -1,40 +1,53 @@
 <template>
   <div>
-    <body>
+    <body id="app">
       <form
         class="container"
-        id="app"
         @submit.prevent="checkForm"
         action="/sonwhere"
-        method="get"
+        method="post"
       >
         <div class="formTitle">
           <h3>填寫募資方案資料</h3>
         </div>
         <div class="row-cols-md-1 text-left">
-          <p>募資專案名稱：</p>
-          <input class="name" v-model="formData.name" placeholder="請輸入募資專案名稱" />
-          <p>募資金額(元)：</p>
-          <input
-            class="amount"
-            v-model.number="formData.amount"
-            type="number"
-            placeholder="請輸入募資金額"
-          />
+          <p>募資方案名稱：</p>
+          <input class="name" v-model="name" placeholder="請輸入募資方案名稱" />
           <p>類別：</p>
-          <select class="type" v-model="formData.type">
+          <select class="type" v-model="type">
             <option v-for="type in types" :key="type.id" :type="type">{{
               type
             }}</option>
           </select>
+          <p>目標金額(元)：</p>
+          <input
+            class="amount"
+            v-model.number="amount"
+            type="number"
+            placeholder="請輸入目標金額"
+          />
+          <p>募資期間(天)：</p>
+          <input
+            class="period"
+            v-model.number="period"
+            type="number"
+            placeholder="請輸入募資期間"
+          />
+          <p>回饋方案數(種)：</p>
+          <input
+            class="feedback_num"
+            v-model.number="feedback_num"
+            type="number"
+            placeholder="請輸入回饋方案數"
+          />
           <p>內容簡介：</p>
           <textarea
             class="content"
-            v-model="formData.content"
-            placeholder="請輸入募資專案內容簡介"
+            v-model="content"
+            placeholder="請輸入募資方案內容簡介"
           ></textarea>
           <div class="error" v-if="errors.length">
-            <img class="error_img" src="https://i.imgur.com/xdZuo8J.png" /><span
+            <img class="error_img" src="https://i.imgur.com/nYqtCEr.png" /><span
               class="error_msg"
               >請輸入<span v-for="(error, index) in errors" :key="error.id"
                 ><span>{{ error }}</span
@@ -84,15 +97,17 @@
 }
 
 .formTitle > h3 {
-  font-weight: 550;
-  padding: 90px 60px 30px 60px;
+  font-weight: 500;
+  padding: 110px 60px 30px 60px;
 }
 
 .name,
 .amount,
 .type,
+.period,
+.feedback_num,
 .content {
-  box-shadow: 0px 3px 10px grey;
+  box-shadow: 0 3px 12px 0 rgba(0, 0, 0, 0.2), 0 1px 15px 0 rgba(0, 0, 0, 0.2);
   border: 0px;
   border-radius: 5px;
   padding: 5px 10px;
@@ -116,9 +131,9 @@
 .purple_button {
   background: #281483;
   border: 0px;
-  border-radius: 15px;
+  border-radius: 30px;
   color: white;
-  font-weight: 550;
+  font-weight: 500;
   padding: 10px 40px;
   margin: 30px 40px 40px 40px;
   outline: none;
@@ -137,7 +152,7 @@
   padding: 10px;
   border-radius: 5px;
   background: #fcd4dc;
-  font-weight: 550px;
+  font-weight: 500;
 }
 .error_img {
   width: 20px;
@@ -149,20 +164,19 @@
 .error_msg {
   margin: 0px 5px;
 }
+
+input:focus,select:focus,textarea:focus{
+  outline:none
+}
 </style>
 
 <script>
-  import api from '../api/index';
-
+// import api from '../api/index'
+import { getAPI } from '../api/index'
+import axios from "axios";
 export default {
   data() {
     return {
-      formData:{
-        name:'',
-        amount:'',
-        type:'',
-        content:'',
-      },
       name: null,
       amount: null,
       types: [
@@ -189,50 +203,73 @@ export default {
         "電影動畫",
         "地方創生"
       ],
+      type: null,
       content: null,
       projects: [],
-      errors: []
+      errors: [],
+      result:'',
+      period: null,
+      feedback_num: null
     };
   },
   methods: {
-    // submitNote () {
-    //   api.fetchNotes('post', null, this.formData).then(res => {
-    //     this.msg = 'Saved'
-    //   }).catch((e) => {
-    //     this.msg = e.response
-    //   })
-    // },
     goHome() {
       this.$router.push({ path: "/" });
     },
     checkForm: function(e) {
       //拿到資料跳到結果頁面
-      if (this.formData.name && this.formData.amount && this.formData.type && this.formData.content) {
+      if (
+        this.name &&
+        this.amount &&
+        this.type &&
+        this.content &&
+        this.period &&
+        this.feedback_num
+      ) {
         let project_data = {
-          name: this.formData.name,
-          amount: this.formData.amount,
-          type: this.formData.type,
-          content: this.formData.content
+          "name": this.name,
+          "type": this.type,
+          "amount": this.amount,
+          "period": this.period,
+          "feedback_num": this.feedback_num,
+          "content": this.content,
         };
         this.projects.push(project_data);
-        // 跳轉至最後一頁
-        //this.$router.push({ path: "/result" });
+        // api.fetchNotes('post', null, this.projects).then(res => {
+        //   // this.msg = 'Saved'
+        //   console.log('get input')
+        //   console.log(this.projects)
+        // }).catch((e) => {
+        //   this.msg = e.response
+        //   console.log('error happen')
+        // })
+      // axios({
+      //   method: 'post',
+      //   url: 'http://127.0.0.1:8000/mainapp/status/',
+      //   data: this.projects,
+      // });
 
-        api.fetchNotes('post', null, this.formData).then(res => {
-        //this.msg = 'Saved';
-          console.log('post');
-        }).catch((e) => {
-          this.msg = e.response
-        })
+        getAPI.post('http://127.0.0.1:8000/mainapp/status/',this.projects)
+          .then(response => {
+            console.log('Post API has recieved data')
+            this.result = response.data
+            // 跳轉至最後一頁
+            this.$router.push({ path: "/result" ,query:this.result});
+          })
+          .catch(err => {
+            console.log(err)
+          })
+
+
       }
       //資料有缺則跳出警告
       this.errors = [];
-      if (!this.formData.name) this.errors.push("募資專案名稱");
-      if (!this.formData.amount) this.errors.push("募資金額");
-      if (!this.formData.type) this.errors.push("類別");
-      if (!this.formData.content) this.errors.push("內容簡介");
-
-
+      if (!this.name) this.errors.push("募資方案");
+      if (!this.type) this.errors.push("類別");
+      if (!this.amount) this.errors.push("目標金額");
+      if (!this.period) this.errors.push("募資期間");
+      if (!this.feedback_num) this.errors.push("回饋方案數");
+      if (!this.content) this.errors.push("內容簡介");
 
       e.preventDefault();
     }
