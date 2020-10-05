@@ -26,7 +26,7 @@ import json
 # Create your views here.
 # 需要导入相关的模块
 #
-camp = pd.read_excel("/Users/hw_students/proj02_data/campaign_0828.xlsx")
+camp = pd.read_excel("/Users/hw_students/proj02_data/campaign_1002.xlsx")
 
 class UserView(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -92,7 +92,7 @@ def campaignlist(df):
     df.index = range(len(df))
     list_of_list = []
     for i in range(len(df)):
-        t = df["project_id"][i]
+        t = df["id"][i]
         name = df["title"][i]
         sort = sorting(t)
         list_dict = []
@@ -107,7 +107,7 @@ def campaignlist_origin(df):
     df.index = range(len(df))
     list_of_list = []
     for i in range(len(df)):
-        t = df["project_id"][i]
+        t = df["id"][i]
         name = df["title"][i]
         sort = sorting(t)
 
@@ -130,7 +130,7 @@ def days_med(df):
 # 回饋方案數
 def cam_count_med(df):
     cam_count = []
-    for i in df["project_id"]:
+    for i in df["id"]:
         count = Campaign.objects.filter(project__id=i).count()
         cam_count.append(count)
     # df["campaign_count"] = cam_count
@@ -213,7 +213,7 @@ def funding_table(list_of_list, df):
     table["group"] = group
 
     fundraisings = []
-    proj_id = df["project_id"]
+    proj_id = df["id"]
     color = ["#98d86d", "#61Bf81", "#61bfbf", "#79aad0", "#41709e", "#cda7dd", "#a286c7", "#7154c0", "#aa67d1",
              "#d167b2"]
     for i in range(len(df)):
@@ -286,7 +286,7 @@ def similarProj(request):
             ten_proj = []
             for i in range(len(df_10)):
                 one_proj = {}
-                one_proj["id"] = int(df_10.iloc[i:i+1, :].project_id.values[0])
+                one_proj["id"] = int(df_10.iloc[i:i+1, :].id.values[0])
                 one_proj["title"] = str(df_10.iloc[i:i+1, :].title.values[0])
                 one_proj["url"] = str(df_10.iloc[i:i+1, :].url.values[0])
                 funding_target = int(df_10.iloc[i:i+1, :].funding_target.values[0])
