@@ -26,7 +26,7 @@ import json
 # Create your views here.
 # 需要导入相关的模块
 #
-camp = pd.read_excel("/Users/hw_students/proj02_data/campaign_1002.xlsx")
+camp = pd.read_excel("/Users/hw_students/proj02/proj02_data/campaign_1002.xlsx")
 
 class UserView(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -255,8 +255,8 @@ def similarProj(request):
     if request.method == "POST":
         try:
             # 處理資料
-            text2vec_df = pd.read_pickle("/Users/hw_students/proj02_data/text2vec_df.pkl")
-            df = pd.read_pickle("/Users/hw_students/proj02_data/df.pkl")
+            text2vec_df = pd.read_pickle("/Users/hw_students/proj02/proj02_data/text2vec_df.pkl")
+            df = pd.read_pickle("/Users/hw_students/proj02/proj02_data/df.pkl")
             # 處理Input
             userdata = request.data
             print("userdata:")
